@@ -56,8 +56,8 @@ public class ArmControl extends OpMode {
 
         this.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.servo0.setDirection(Servo.Direction.FORWARD);
         this.servo0.setDirection(Servo.Direction.REVERSE);
+        this.servo1.setDirection(Servo.Direction.FORWARD);
 
         this.servo0.setPosition(this.grabberPos);
         this.servo1.setPosition(this.grabberPos);
