@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class ArmControl extends OpMode {
+    private static final double ARM_SPEED_SCALE = 0.5;
+
     private DcMotor motor0;
     private DcMotor motor1;
 
@@ -118,7 +120,7 @@ public class ArmControl extends OpMode {
         this.motor0.setPower(js_l_y - js_l_x);
         this.motor1.setPower(-js_l_y - js_l_x);
 
-        this.armMotor.setPower(js_r_y);
+        this.armMotor.setPower(js_r_y * ArmControl.ARM_SPEED_SCALE);
 
         // Report motor data
         this.telemetry.addData(
