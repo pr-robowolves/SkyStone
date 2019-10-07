@@ -100,6 +100,8 @@ public class ArmControl extends OpMode {
 
         boolean gp_x = this.gamepad1.x;
         boolean gp_a = this.gamepad1.a;
+        boolean gp_b = this.gamepad1.b;
+        boolean gp_y = this.gamepad1.y;
 
         // Report values
         this.telemetry.addData(
@@ -116,6 +118,15 @@ public class ArmControl extends OpMode {
                 js_r_y
         );
 
+        this.telemetry.addData(
+                "Buttons",
+                "%s%s%s%s",
+                gp_a ? 'A' : 'a',
+                gp_b ? 'B' : 'b',
+                gp_x ? 'X' : 'x',
+                gp_y ? 'Y' : 'y'
+        );
+
         // Write speeds to motors (calculates steering)
         this.motor0.setPower(js_l_y - js_l_x);
         this.motor1.setPower(-js_l_y - js_l_x);
@@ -124,17 +135,19 @@ public class ArmControl extends OpMode {
 
         // Report motor data
         this.telemetry.addData(
-                "Motor Speed",
-                "0: %.2f | 1: %.2f",
+                "Motor Speeds (0, 1, arm)",
+                "%.2f, %.2f, %.2f",
                 this.motor0.getPower(),
-                this.motor1.getPower()
+                this.motor1.getPower(),
+                this.armMotor.getPower()
         );
 
         this.telemetry.addData(
-                "Motor Position",
-                "0: %d | 1: %d",
+                "Motor Positions (0, 1, arm)",
+                "%d, %d, %d",
                 this.motor0.getCurrentPosition(),
-                this.motor1.getCurrentPosition()
+                this.motor1.getCurrentPosition(),
+                this.armMotor.getCurrentPosition()
         );
 
         // Update grabber position
@@ -152,5 +165,8 @@ public class ArmControl extends OpMode {
         // Write grabber position to servos
         this.servo0.setPosition(grabberPos);
         this.servo1.setPosition(grabberPos);
+
+        // Report grabber position
+        this.telemetry.addData("Grabber Position", "%.2f", this.grabberPos);
     }
 }
