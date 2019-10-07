@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class ArmControl extends OpMode {
@@ -13,6 +14,10 @@ public class ArmControl extends OpMode {
     private DcMotor armMotor;
     private Servo servo0;
     private Servo servo1;
+
+    private double grabberPos = 0.0;
+
+    private ElapsedTime timer;
 
     @Override
     public void init() {
@@ -51,6 +56,15 @@ public class ArmControl extends OpMode {
 
         this.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        this.servo0.setDirection(Servo.Direction.FORWARD);
+        this.servo0.setDirection(Servo.Direction.REVERSE);
+
+        this.servo0.setPosition(this.grabberPos);
+        this.servo1.setPosition(this.grabberPos);
+
+        // Create timer
+        this.timer = new ElapsedTime();
+
         // Initialization finished
         this.telemetry.addData("Status", "Ready");
     }
@@ -59,6 +73,9 @@ public class ArmControl extends OpMode {
     public void start() {
         // Clear telemetry data before beginning main loop
         this.telemetry.clearAll();
+
+        // Reset timer
+        this.timer.reset();
     }
 
     @Override
@@ -66,12 +83,21 @@ public class ArmControl extends OpMode {
         // Clear telemetry
         this.telemetry.clearAll();
 
-        // Read joystick values
+        // Read timer, save timescale
+        double timescale = this.timer.seconds();
+        this.timer.reset();
+
+        this.telemetry.addData("Timescale", "%.2f", timescale);
+
+        // Read gamepad values
         float js_l_x = this.gamepad1.left_stick_x;
         float js_l_y = this.gamepad1.left_stick_y;
 
         float js_r_x = this.gamepad1.right_stick_x;
         float js_r_y = this.gamepad1.right_stick_y;
+
+        boolean gp_x = this.gamepad1.x;
+        boolean gp_a = this.gamepad1.a;
 
         // Report values
         this.telemetry.addData(
@@ -108,5 +134,21 @@ public class ArmControl extends OpMode {
                 this.motor0.getCurrentPosition(),
                 this.motor1.getCurrentPosition()
         );
+
+        // Update grabber position
+        if (gp_a) {
+            this.grabberPos -= timescale;
+        }
+        if (gp_x) {
+            this.grabberPos += timescale;
+        }
+
+        // Clamp grabber position to [0.0, 1.0]
+        this.grabberPos = Math.max(this.grabberPos, 0.0);
+        this.grabberPos = Math.min(this.grabberPos, 1.0);
+
+        // Write grabber position to servos
+        this.servo0.setPosition(grabberPos);
+        this.servo1.setPosition(grabberPos);
     }
 }
