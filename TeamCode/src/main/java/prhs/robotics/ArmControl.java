@@ -92,46 +92,42 @@ public class ArmControl extends OpMode {
         this.telemetry.addData("Timescale", "%.2f", timescale);
 
         // Read gamepad values
-        float js_l_x = this.gamepad1.left_stick_x;
-        float js_l_y = this.gamepad1.left_stick_y;
+        float js_1_x = this.gamepad1.left_stick_x;
+        float js_1_y = this.gamepad1.left_stick_y;
 
-        float js_r_x = this.gamepad1.right_stick_x;
-        float js_r_y = this.gamepad1.right_stick_y;
+        float js_2_x = this.gamepad2.left_stick_x;
+        float js_2_y = this.gamepad2.left_stick_y;
 
-        boolean gp_x = this.gamepad1.x;
-        boolean gp_a = this.gamepad1.a;
-        boolean gp_b = this.gamepad1.b;
-        boolean gp_y = this.gamepad1.y;
+        float gp_2_lt = this.gamepad2.left_trigger;
+        float gp_2_rt = this.gamepad2.right_trigger;
 
         // Report values
         this.telemetry.addData(
-                "Left Joystick Position",
+                "GP1 Joystick Position",
                 "(%.2f, %.2f)",
-                js_l_x,
-                js_l_y
+                js_1_x,
+                js_1_y
         );
 
         this.telemetry.addData(
-                "Right Joystick Position",
+                "GP2 Joystick Position",
                 "(%.2f, %.2f)",
-                js_r_x,
-                js_r_y
+                js_2_x,
+                js_2_y
         );
 
         this.telemetry.addData(
-                "Buttons",
-                "%s%s%s%s",
-                gp_a ? 'A' : 'a',
-                gp_b ? 'B' : 'b',
-                gp_x ? 'X' : 'x',
-                gp_y ? 'Y' : 'y'
+                "GP2 Triggers",
+                "(%.2f, %.2f)",
+                gp_2_lt,
+                gp_2_rt
         );
 
         // Write speeds to motors (calculates steering)
-        this.motor0.setPower(js_l_y - js_l_x);
-        this.motor1.setPower(-js_l_y - js_l_x);
+        this.motor0.setPower(js_1_y - js_1_x);
+        this.motor1.setPower(-js_1_y - js_1_x);
 
-        this.armMotor.setPower(js_r_y * ArmControl.ARM_SPEED_SCALE);
+        this.armMotor.setPower(js_2_y * ArmControl.ARM_SPEED_SCALE);
 
         // Report motor data
         this.telemetry.addData(
@@ -151,10 +147,10 @@ public class ArmControl extends OpMode {
         );
 
         // Update grabber position
-        if (gp_a) {
+        if (gp_2_lt > 0.5f) {
             this.grabberPos -= timescale;
         }
-        if (gp_x) {
+        if (gp_2_rt > 0.5f) {
             this.grabberPos += timescale;
         }
 
