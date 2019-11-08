@@ -70,6 +70,13 @@ public class Autonomous extends OpMode {
 
         // If motors aren't working...
         if (!this.motor0.isBusy() && !this.motor1.isBusy()) {
+            // AAA
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // ignore :(
+            }
+
             int m0_pos = this.motor0.getTargetPosition();
             int m1_pos = this.motor1.getTargetPosition();
 
