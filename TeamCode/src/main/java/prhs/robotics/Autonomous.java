@@ -70,26 +70,27 @@ public class Autonomous extends OpMode {
 
         // If motors aren't working...
         if (!this.motor0.isBusy() && !this.motor1.isBusy()) {
-            this.reset_encoders();
+            int m0_pos = this.motor0.getTargetPosition();
+            int m1_pos = this.motor1.getTargetPosition();
 
             switch (state) {
                 case 0:
-                    this.motor0.setTargetPosition(-(int) (STEPS_PER_IN * 12.0));
-                    this.motor1.setTargetPosition((int) (STEPS_PER_IN * 12.0));
+                    this.motor0.setTargetPosition(m0_pos - (int) (STEPS_PER_IN * 12.0));
+                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 12.0));
 
                     this.state = 1;
                     break;
 
                 case 1:
-                    this.motor0.setTargetPosition((int) (STEPS_PER_IN * 5.0 * Math.PI));
-                    this.motor1.setTargetPosition((int) (STEPS_PER_IN * 5.0 * Math.PI));
+                    this.motor0.setTargetPosition(m0_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
+                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
 
                     this.state = 2;
                     break;
 
                 case 2:
-                    this.motor0.setTargetPosition(-(int) (STEPS_PER_IN * 36.0));
-                    this.motor1.setTargetPosition((int) (STEPS_PER_IN * 36.0));
+                    this.motor0.setTargetPosition(m0_pos - (int) (STEPS_PER_IN * 36.0));
+                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 36.0));
 
                     this.state = 3;
                     break;
