@@ -89,7 +89,7 @@ public class Autonomous extends OpMode {
 
                 case 2:
                     this.motor0.setTargetPosition(-(int) (STEPS_PER_IN * 36.0));
-                    this.motor1.setTargetPosition((int) (STEPS_PER_IN * 4636.0));
+                    this.motor1.setTargetPosition((int) (STEPS_PER_IN * 36.0));
 
                     this.state = 3;
                     break;
