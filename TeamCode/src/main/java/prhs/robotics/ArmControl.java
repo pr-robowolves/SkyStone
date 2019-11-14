@@ -6,14 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import prhs.robotics.util.Motors;
+
 @TeleOp
 public class ArmControl extends OpMode {
     private static final double ARM_SPEED_SCALE = 0.5;
 
-    private DcMotor motor0;
-    private DcMotor motor1;
+    private DcMotor m_front_l; // port 0
+    private DcMotor m_front_r; // port 1
+    private DcMotor m_back_l;  // port 3
+    private DcMotor m_back_r;  // port 4
 
-    private DcMotor armMotor;
     private Servo servo0;
     private Servo servo1;
 
@@ -35,29 +38,21 @@ public class ArmControl extends OpMode {
         this.telemetry.addData("Status", "Initializing");
 
         // Get motors
-        this.motor0 = this.hardwareMap.get(DcMotor.class, "motor0");
-        this.motor1 = this.hardwareMap.get(DcMotor.class, "motor1");
-
-        this.armMotor = this.hardwareMap.get(DcMotor.class, "motor2");
+        this.m_front_l = this.hardwareMap.get(DcMotor.class, "m_front_l");
+        this.m_front_r = this.hardwareMap.get(DcMotor.class, "m_front_r");
+        this.m_back_l = this.hardwareMap.get(DcMotor.class, "m_back_l");
+        this.m_back_r = this.hardwareMap.get(DcMotor.class, "m_back_r");
 
         this.servo0 = this.hardwareMap.get(Servo.class, "servo0");
         this.servo1 = this.hardwareMap.get(Servo.class, "servo1");
 
         // Initialize and reset motors
-        this.motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Motors.reset_motor(m_front_l, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors.reset_motor(m_front_r, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors.reset_motor(m_back_l, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors.reset_motor(m_back_r, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        this.motor0.setTargetPosition(0);
-        this.motor1.setTargetPosition(0);
-        this.armMotor.setTargetPosition(0);
-
-        this.motor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        this.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        // Set servo directions
         this.servo0.setDirection(Servo.Direction.REVERSE);
         this.servo1.setDirection(Servo.Direction.FORWARD);
 
