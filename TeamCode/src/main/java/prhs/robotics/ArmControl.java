@@ -116,26 +116,29 @@ public class ArmControl extends OpMode {
         );
 
         // Write speeds to motors (calculates steering)
-        this.motor0.setPower(js_1_y - js_1_x);
-        this.motor1.setPower(-js_1_y - js_1_x);
+        this.m_front_l.setPower(js_1_y - js_1_x);
+        this.m_back_l.setPower(js_1_y - js_1_x);
 
-        this.armMotor.setPower(js_2_y * ArmControl.ARM_SPEED_SCALE);
+        this.m_front_r.setPower(-js_1_y - js_1_x);
+        this.m_back_r.setPower(-js_1_y - js_1_x);
 
         // Report motor data
         this.telemetry.addData(
-                "Motor Speeds (0, 1, arm)",
-                "%.2f, %.2f, %.2f",
-                this.motor0.getPower(),
-                this.motor1.getPower(),
-                this.armMotor.getPower()
+                "Motor Speeds",
+                "%.2f, %.2f, %.2f, %.2f",
+                this.m_front_l.getPower(),
+                this.m_front_r.getPower(),
+                this.m_back_l.getPower(),
+                this.m_back_r
         );
 
         this.telemetry.addData(
-                "Motor Positions (0, 1, arm)",
-                "%d, %d, %d",
-                this.motor0.getCurrentPosition(),
-                this.motor1.getCurrentPosition(),
-                this.armMotor.getCurrentPosition()
+                "Motor Positions",
+                "%d, %d, %d, %d",
+                this.m_front_l.getCurrentPosition(),
+                this.m_front_r.getCurrentPosition(),
+                this.m_back_l.getCurrentPosition(),
+                this.m_back_r.getCurrentPosition()
         );
 
         // Update grabber position
