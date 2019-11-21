@@ -129,7 +129,7 @@ public class ArmControl extends OpMode {
                 this.m_front_l.getPower(),
                 this.m_front_r.getPower(),
                 this.m_back_l.getPower(),
-                this.m_back_r
+                this.m_back_r.getPower()
         );
 
         this.telemetry.addData(
