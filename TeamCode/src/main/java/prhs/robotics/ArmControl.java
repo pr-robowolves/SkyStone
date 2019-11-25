@@ -84,8 +84,11 @@ public class ArmControl extends OpMode {
         this.telemetry.addData("Timescale", "%.2f", timescale);
 
         // Read gamepad values
-        float js_1_x = this.gamepad1.left_stick_x;
-        float js_1_y = this.gamepad1.left_stick_y;
+        float js_1_lx = this.gamepad1.left_stick_x;
+        float js_1_ly = this.gamepad1.left_stick_y;
+
+        float js_1_rx = this.gamepad1.right_stick_x;
+        float js_1_ry = this.gamepad1.right_stick_y;
 
         float js_2_x = this.gamepad2.left_stick_x;
         float js_2_y = this.gamepad2.left_stick_y;
@@ -97,8 +100,8 @@ public class ArmControl extends OpMode {
         this.telemetry.addData(
                 "GP1 Joystick Position",
                 "(%.2f, %.2f)",
-                js_1_x,
-                js_1_y
+                js_1_lx,
+                js_1_ly
         );
 
         this.telemetry.addData(
@@ -115,12 +118,29 @@ public class ArmControl extends OpMode {
                 gp_2_rt
         );
 
-        // Write speeds to motors (calculates steering)
-        this.m_front_l.setPower(js_1_y - js_1_x);
-        this.m_back_l.setPower(js_1_y - js_1_x);
+        // Declare motor speeds
+        float p_front_l = 0f;
+        float p_front_r = 0f;
+        float p_back_l = 0f;
+        float p_back_r = 0f;
 
-        this.m_front_r.setPower(-js_1_y - js_1_x);
-        this.m_back_r.setPower(-js_1_y - js_1_x);
+        // Traditional control (left stick)
+        p_front_l += js_1_ly - js_1_lx;
+        p_front_r += -js_1_ly - js_1_lx;
+        p_back_l += js_1_ly - js_1_lx;
+        p_back_r += -js_1_ly - js_1_lx;
+
+        // Strafe control (right stick)
+        p_front_l += js_1_ry - js_1_rx;
+        p_front_r += -js_1_ry + js_1_rx;
+        p_back_l += js_1_ry + js_1_rx;
+        p_back_r += -js_1_ry - js_1_rx;
+
+        // Write motor speeds
+        this.m_front_l.setPower(p_front_l);
+        this.m_front_r.setPower(p_front_r);
+        this.m_back_l.setPower(p_back_l);
+        this.m_back_r.setPower(p_back_r);
 
         // Report motor data
         this.telemetry.addData(
