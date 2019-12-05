@@ -20,7 +20,7 @@ public class ArmControl extends OpMode {
     private Servo servo0;
     private Servo servo1;
 
-    private double grabberPos = 0.0;
+    private double grabberPos = 0.5; // Initialize grabber half-open
 
     private ElapsedTime timer;
 
