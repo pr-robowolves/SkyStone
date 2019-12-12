@@ -10,7 +10,7 @@ import prhs.robotics.util.Motors;
 
 @TeleOp
 public class ArmControl extends OpMode {
-    private static final double ARM_SPEED_SCALE = 0.5;
+    private static final double GRABBER_SPEED_SCALE = 0.5;
 
     private DcMotor m_front_l; // port 0
     private DcMotor m_front_r; // port 1
@@ -20,7 +20,7 @@ public class ArmControl extends OpMode {
     private Servo servo0;
     private Servo servo1;
 
-    private double grabberPos = 0.5; // Initialize grabber half-open
+    private double grabberPos = 0.2; // Initialize grabber mostly open
 
     private ElapsedTime timer;
 
@@ -163,10 +163,10 @@ public class ArmControl extends OpMode {
 
         // Update grabber position
         if (gp_2_lt > 0.5f) {
-            this.grabberPos -= timescale;
+            this.grabberPos -= timescale * GRABBER_SPEED_SCALE;
         }
         if (gp_2_rt > 0.5f) {
-            this.grabberPos += timescale;
+            this.grabberPos += timescale * GRABBER_SPEED_SCALE;
         }
 
         // Clamp grabber position to [0.0, 1.0]
