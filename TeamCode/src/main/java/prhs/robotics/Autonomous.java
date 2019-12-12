@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous
-public class AutonomousR extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous
+public class Autonomous extends OpMode {
     private static final double STEPS_PER_IN = 112.648;
 
     private DcMotor motor0;
@@ -90,8 +90,8 @@ public class AutonomousR extends OpMode {
                     break;
 
                 case 1:
-                    this.motor0.setTargetPosition(m0_pos - (int) (STEPS_PER_IN * 5.0 * Math.PI));
-                    this.motor1.setTargetPosition(m1_pos - (int) (STEPS_PER_IN * 5.0 * Math.PI));
+                    this.motor0.setTargetPosition(m0_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
+                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
 
                     this.state = 2;
                     break;
