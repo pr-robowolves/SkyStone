@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import prhs.robotics.util.Motors;
 
-@TeleOp
-public class ArmControl extends OpMode {
+@TeleOp(name="[USE THIS] Drive")
+public class Drive extends OpMode {
     private static final double GRABBER_SPEED_SCALE = 0.5;
 
     private DcMotor m_front_l; // port 0

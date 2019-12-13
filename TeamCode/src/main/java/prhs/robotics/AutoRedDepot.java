@@ -1,7 +1,8 @@
 package prhs.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import java.util.LinkedList;
-import java.util.Stack;
 
 import prhs.robotics.autonomous.Command;
 import prhs.robotics.autonomous.Controller;
@@ -9,8 +10,8 @@ import prhs.robotics.autonomous.commands.Direction;
 import prhs.robotics.autonomous.commands.Move;
 import prhs.robotics.autonomous.commands.Wait;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class Autonomous extends Controller {
+@Autonomous(name="Red Team Depot Side")
+public class AutoRedDepot extends Controller {
     private LinkedList<Command> command_queue;
 
     @Override
@@ -19,7 +20,7 @@ public class Autonomous extends Controller {
 
         this.command_queue.add(new Move(Direction.FORWARDS, 12.0));
         this.command_queue.add(new Wait(0.5));
-        this.command_queue.add(new Move(Direction.LEFT, 36.0));
+        this.command_queue.add(new Move(Direction.RIGHT, 36.0));
 
         super.init();
     }
