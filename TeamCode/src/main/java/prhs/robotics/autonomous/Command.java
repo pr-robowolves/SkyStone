@@ -5,5 +5,5 @@ public interface Command {
     void run(CommandContext ctx);
 
     // Check if command is complete
-    boolean poll();
+    boolean poll(CommandContext ctx);
 }

@@ -72,7 +72,7 @@ public abstract class Controller extends OpMode {
         this.telemetry.clearAll();
 
         // Poll current command for completion
-        if (this.current_command != null && this.current_command.poll()) {
+        if (this.current_command != null && this.current_command.poll(this.command_context)) {
             // If complete, start next command if it exists
             this.current_command = this.nextCommand();
             if (this.current_command != null) {
