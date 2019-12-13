@@ -1,38 +1,26 @@
 package prhs.robotics;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import prhs.robotics.util.Motors;
+
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends OpMode {
-    private static final double STEPS_PER_IN = 112.648;
+    private static final double STEPS_PER_IN = 118.801;
 
-    private DcMotor motor0;
-    private DcMotor motor1;
+    private DcMotor m_front_l; // port 0
+    private DcMotor m_front_r; // port 1
+    private DcMotor m_back_l;  // port 3
+    private DcMotor m_back_r;  // port 4
 
     private int state = 0;
     /*
      * 0 = init
-     * 1 = moving 12in
-     * 2 = turning
-     * 3 = moving 36in
-     * 4 = done
+     * 1 = moving 12in forward
+     * 2 = moving 36in right
+     * 3 = done
      */
-
-    private void reset_encoders() {
-        this.motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        this.motor0.setTargetPosition(0);
-        this.motor1.setTargetPosition(0);
-
-        this.motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        this.motor0.setPower(1.0);
-        this.motor1.setPower(1.0);
-    }
 
     @Override
     public void init() {
@@ -48,11 +36,22 @@ public class Autonomous extends OpMode {
         this.telemetry.addData("Status", "Initializing");
 
         // Get motors
-        this.motor0 = this.hardwareMap.get(DcMotor.class, "motor0");
-        this.motor1 = this.hardwareMap.get(DcMotor.class, "motor1");
+        this.m_front_l = this.hardwareMap.get(DcMotor.class, "m_front_l");
+        this.m_front_r = this.hardwareMap.get(DcMotor.class, "m_front_r");
+        this.m_back_l = this.hardwareMap.get(DcMotor.class, "m_back_l");
+        this.m_back_r = this.hardwareMap.get(DcMotor.class, "m_back_r");
 
         // Initialize and reset motors
-        this.reset_encoders();
+        Motors.reset_motor(m_front_l, DcMotor.RunMode.RUN_TO_POSITION);
+        Motors.reset_motor(m_front_r, DcMotor.RunMode.RUN_TO_POSITION);
+        Motors.reset_motor(m_back_l, DcMotor.RunMode.RUN_TO_POSITION);
+        Motors.reset_motor(m_back_r, DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set motor speeds
+        this.m_front_l.setPower(0.5);
+        this.m_front_r.setPower(0.5);
+        this.m_back_l.setPower(0.5);
+        this.m_back_r.setPower(0.5);
 
         // Initialization finished
         this.telemetry.addData("Status", "Ready");
@@ -70,7 +69,7 @@ public class Autonomous extends OpMode {
         this.telemetry.clearAll();
 
         // If motors aren't working...
-        if (!this.motor0.isBusy() && !this.motor1.isBusy()) {
+        if (!this.m_front_l.isBusy() && !this.m_front_r.isBusy() && !this.m_back_l.isBusy() && !this.m_back_r.isBusy()) {
             // AAA
             try {
                 Thread.sleep(1000);
@@ -78,32 +77,35 @@ public class Autonomous extends OpMode {
                 // ignore :(
             }
 
-            int m0_pos = this.motor0.getTargetPosition();
-            int m1_pos = this.motor1.getTargetPosition();
+            int mfl_pos = this.m_front_l.getTargetPosition();
+            int mfr_pos = this.m_front_r.getTargetPosition();
+            int mbl_pos = this.m_back_l.getTargetPosition();
+            int mbr_pos = this.m_back_r.getTargetPosition();
 
             switch (state) {
                 case 0:
-                    this.motor0.setTargetPosition(m0_pos - (int) (STEPS_PER_IN * 12.0));
-                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 12.0));
+                    this.m_front_l.setTargetPosition(mfl_pos - (int) (STEPS_PER_IN * 12.0));
+                    this.m_front_r.setTargetPosition(mfr_pos + (int) (STEPS_PER_IN * 12.0));
+                    this.m_back_l.setTargetPosition(mbl_pos - (int) (STEPS_PER_IN * 12.0));
+                    this.m_back_r.setTargetPosition(mbr_pos + (int) (STEPS_PER_IN * 12.0));
 
                     this.state = 1;
                     break;
 
                 case 1:
-                    this.motor0.setTargetPosition(m0_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
-                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 5.0 * Math.PI));
+                    this.m_front_l.setTargetPosition(mfl_pos + (int) (STEPS_PER_IN * 36.0));
+                    this.m_front_r.setTargetPosition(mfr_pos - (int) (STEPS_PER_IN * 36.0));
+                    this.m_back_l.setTargetPosition(mbl_pos - (int) (STEPS_PER_IN * 36.0));
+                    this.m_back_r.setTargetPosition(mbr_pos + (int) (STEPS_PER_IN * 36.0));
 
                     this.state = 2;
                     break;
 
                 case 2:
-                    this.motor0.setTargetPosition(m0_pos - (int) (STEPS_PER_IN * 36.0));
-                    this.motor1.setTargetPosition(m1_pos + (int) (STEPS_PER_IN * 36.0));
-
                     this.state = 3;
                     break;
-
-                case 3:
+                    
+                default:
                     break;
             }
         }
@@ -116,17 +118,21 @@ public class Autonomous extends OpMode {
 
         // Report motor data
         this.telemetry.addData(
-                "Motor Speeds (0, 1)",
-                "%.2f, %.2f",
-                this.motor0.getPower(),
-                this.motor1.getPower()
+                "Motor Speeds",
+                "%.2f, %.2f, %.2f, %.2f",
+                this.m_front_l.getPower(),
+                this.m_front_r.getPower(),
+                this.m_back_l.getPower(),
+                this.m_back_r.getPower()
         );
 
         this.telemetry.addData(
-                "Motor Positions (0, 1)",
-                "%d, %d",
-                this.motor0.getCurrentPosition(),
-                this.motor1.getCurrentPosition()
+                "Motor Positions",
+                "%d, %d, %d, %d",
+                this.m_front_l.getCurrentPosition(),
+                this.m_front_r.getCurrentPosition(),
+                this.m_back_l.getCurrentPosition(),
+                this.m_back_r.getCurrentPosition()
         );
     }
 }
