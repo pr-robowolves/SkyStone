@@ -1,26 +1,20 @@
-package prhs.robotics;
+package prhs.robotics.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import prhs.robotics.util.Motors;
 
-import static prhs.robotics.util.Constants.STEPS_PER_IN;
+public abstract class Controller extends OpMode {
+    public abstract Command nextCommand();
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class Autonomous extends OpMode {
     private DcMotor m_front_l; // port 0
     private DcMotor m_front_r; // port 1
     private DcMotor m_back_l;  // port 3
     private DcMotor m_back_r;  // port 4
 
-    private int state = 0;
-    /*
-     * 0 = init
-     * 1 = moving 12in forward
-     * 2 = moving 36in right
-     * 3 = done
-     */
+    private Command current_command;
+    private CommandContext command_context;
 
     @Override
     public void init() {
@@ -53,6 +47,9 @@ public class Autonomous extends OpMode {
         this.m_back_l.setPower(0.5);
         this.m_back_r.setPower(0.5);
 
+        // Create command context
+        this.command_context = new CommandContext(m_front_l, m_front_r, m_back_l, m_back_r);
+
         // Initialization finished
         this.telemetry.addData("Status", "Ready");
     }
@@ -61,6 +58,12 @@ public class Autonomous extends OpMode {
     public void start() {
         // Clear telemetry data before beginning main loop
         this.telemetry.clearAll();
+
+        // Start first command
+        this.current_command = this.nextCommand();
+        if (this.current_command != null) {
+            this.current_command.run(this.command_context);
+        }
     }
 
     @Override
@@ -68,53 +71,14 @@ public class Autonomous extends OpMode {
         // Clear telemetry
         this.telemetry.clearAll();
 
-        // If motors aren't working...
-        if (!this.m_front_l.isBusy() && !this.m_front_r.isBusy() && !this.m_back_l.isBusy() && !this.m_back_r.isBusy()) {
-            // AAA
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // ignore :(
-            }
-
-            int mfl_pos = this.m_front_l.getTargetPosition();
-            int mfr_pos = this.m_front_r.getTargetPosition();
-            int mbl_pos = this.m_back_l.getTargetPosition();
-            int mbr_pos = this.m_back_r.getTargetPosition();
-
-            switch (state) {
-                case 0:
-                    this.m_front_l.setTargetPosition(mfl_pos - (int) (STEPS_PER_IN * 12.0));
-                    this.m_front_r.setTargetPosition(mfr_pos + (int) (STEPS_PER_IN * 12.0));
-                    this.m_back_l.setTargetPosition(mbl_pos - (int) (STEPS_PER_IN * 12.0));
-                    this.m_back_r.setTargetPosition(mbr_pos + (int) (STEPS_PER_IN * 12.0));
-
-                    this.state = 1;
-                    break;
-
-                case 1:
-                    this.m_front_l.setTargetPosition(mfl_pos + (int) (STEPS_PER_IN * 36.0));
-                    this.m_front_r.setTargetPosition(mfr_pos - (int) (STEPS_PER_IN * 36.0));
-                    this.m_back_l.setTargetPosition(mbl_pos - (int) (STEPS_PER_IN * 36.0));
-                    this.m_back_r.setTargetPosition(mbr_pos + (int) (STEPS_PER_IN * 36.0));
-
-                    this.state = 2;
-                    break;
-
-                case 2:
-                    this.state = 3;
-                    break;
-
-                default:
-                    break;
+        // Poll current command for completion
+        if (this.current_command != null && this.current_command.poll()) {
+            // If complete, start next command if it exists
+            this.current_command = this.nextCommand();
+            if (this.current_command != null) {
+                this.current_command.run(this.command_context);
             }
         }
-
-        this.telemetry.addData(
-                "State",
-                "%d",
-                this.state
-        );
 
         // Report motor data
         this.telemetry.addData(
