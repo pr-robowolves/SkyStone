@@ -10,17 +10,16 @@ import prhs.robotics.util.Motors;
 
 @TeleOp(name="[USE THIS] Drive")
 public class Drive extends OpMode {
-    private static final double GRABBER_SPEED_SCALE = 0.5;
-
     private DcMotor m_front_l; // port 0
     private DcMotor m_front_r; // port 1
     private DcMotor m_back_l;  // port 3
     private DcMotor m_back_r;  // port 4
 
+    // Arm servos
     private Servo servo0;
     private Servo servo1;
 
-    private double grabberPos = 0.2; // Initialize grabber mostly open
+    private double armPosition = 0.2; // Start arm slightly down
 
     private ElapsedTime timer;
 
@@ -161,23 +160,23 @@ public class Drive extends OpMode {
                 this.m_back_r.getCurrentPosition()
         );
 
-        // Update grabber position
-        if (gp_2_lt > 0.5f) {
-            this.grabberPos -= timescale * GRABBER_SPEED_SCALE;
+        // Update arm position
+        if (gp_2_lt > 0.1f) {
+            this.armPosition -= timescale * gp_2_lt;
         }
-        if (gp_2_rt > 0.5f) {
-            this.grabberPos += timescale * GRABBER_SPEED_SCALE;
+        if (gp_2_rt > 0.1f) {
+            this.armPosition += timescale * gp_2_rt;
         }
 
         // Clamp grabber position to [0.0, 1.0]
-        this.grabberPos = Math.max(this.grabberPos, 0.0);
-        this.grabberPos = Math.min(this.grabberPos, 1.0);
+        this.armPosition = Math.max(this.armPosition, 0.0);
+        this.armPosition = Math.min(this.armPosition, 1.0);
 
         // Write grabber position to servos
-        this.servo0.setPosition(grabberPos);
-        this.servo1.setPosition(grabberPos);
+        this.servo0.setPosition(this.armPosition);
+        this.servo1.setPosition(this.armPosition);
 
         // Report grabber position
-        this.telemetry.addData("Grabber Position", "%.2f", this.grabberPos);
+        this.telemetry.addData("Arm Position", "%.2f", this.armPosition);
     }
 }
