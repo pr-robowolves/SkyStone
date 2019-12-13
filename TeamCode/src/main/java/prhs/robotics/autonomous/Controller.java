@@ -80,6 +80,12 @@ public abstract class Controller extends OpMode {
             }
         }
 
+        this.telemetry.addData(
+                "Current Command",
+                "%s",
+                this.current_command
+        );
+
         // Report motor data
         this.telemetry.addData(
                 "Motor Speeds",

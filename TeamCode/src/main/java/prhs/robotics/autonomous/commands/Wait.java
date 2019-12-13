@@ -2,6 +2,8 @@ package prhs.robotics.autonomous.commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Locale;
+
 import prhs.robotics.autonomous.Command;
 import prhs.robotics.autonomous.CommandContext;
 
@@ -23,5 +25,10 @@ public class Wait implements Command {
     @Override
     public boolean poll(CommandContext _ctx) {
         return this.timer.seconds() >= len;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "Wait %.2f seconds", this.len);
     }
 }

@@ -1,5 +1,7 @@
 package prhs.robotics.autonomous.commands;
 
+import java.util.Locale;
+
 import prhs.robotics.autonomous.Command;
 import prhs.robotics.autonomous.CommandContext;
 
@@ -60,5 +62,10 @@ public class Move implements Command {
                 && !ctx.m_front_r.isBusy()
                 && !ctx.m_back_l.isBusy()
                 && !ctx.m_back_r.isBusy();
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "Move %s %.2f feet", this.dir, this.distance);
     }
 }
