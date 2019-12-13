@@ -2,6 +2,7 @@ package prhs.robotics.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import prhs.robotics.util.Motors;
 
@@ -12,6 +13,9 @@ public abstract class Controller extends OpMode {
     private DcMotor m_front_r; // port 1
     private DcMotor m_back_l;  // port 3
     private DcMotor m_back_r;  // port 4
+
+    private Servo flipper_left;
+    private Servo flipper_right;
 
     private Command current_command;
     private CommandContext command_context;
@@ -35,6 +39,9 @@ public abstract class Controller extends OpMode {
         this.m_back_l = this.hardwareMap.get(DcMotor.class, "m_back_l");
         this.m_back_r = this.hardwareMap.get(DcMotor.class, "m_back_r");
 
+        this.flipper_left = this.hardwareMap.get(Servo.class, "servo3");
+        this.flipper_right = this.hardwareMap.get(Servo.class, "servo2");
+
         // Initialize and reset motors
         Motors.reset_motor(m_front_l, DcMotor.RunMode.RUN_TO_POSITION);
         Motors.reset_motor(m_front_r, DcMotor.RunMode.RUN_TO_POSITION);
@@ -47,8 +54,12 @@ public abstract class Controller extends OpMode {
         this.m_back_l.setPower(0.5);
         this.m_back_r.setPower(0.5);
 
+        // Set servo directions
+        this.flipper_left.setDirection(Servo.Direction.FORWARD);
+        this.flipper_right.setDirection(Servo.Direction.REVERSE);
+
         // Create command context
-        this.command_context = new CommandContext(m_front_l, m_front_r, m_back_l, m_back_r);
+        this.command_context = new CommandContext(m_front_l, m_front_r, m_back_l, m_back_r, 0.5);
 
         // Initialization finished
         this.telemetry.addData("Status", "Ready");
@@ -79,6 +90,9 @@ public abstract class Controller extends OpMode {
                 this.current_command.run(this.command_context);
             }
         }
+
+        this.flipper_left.setPosition(this.command_context.flipper_pos);
+        this.flipper_right.setPosition(this.command_context.flipper_pos);
 
         this.telemetry.addData(
                 "Current Command",

@@ -8,6 +8,7 @@ import prhs.robotics.autonomous.Command;
 import prhs.robotics.autonomous.Controller;
 import prhs.robotics.autonomous.commands.Direction;
 import prhs.robotics.autonomous.commands.Move;
+import prhs.robotics.autonomous.commands.SetFlippers;
 import prhs.robotics.autonomous.commands.Wait;
 
 @Autonomous(name="Red Team Foundation Side")
@@ -19,8 +20,10 @@ public class AutoRedFoundation extends Controller {
         this.command_queue = new LinkedList<>();
 
         this.command_queue.add(new Move(Direction.BACKWARDS, 35.0));
+        this.command_queue.add(new SetFlippers(1.0));
         this.command_queue.add(new Wait(0.5));
         this.command_queue.add(new Move(Direction.FORWARDS, 24.0));
+        this.command_queue.add(new SetFlippers(0.5));
         this.command_queue.add(new Wait(0.5));
         this.command_queue.add(new Move(Direction.LEFT, 48.0));
 
