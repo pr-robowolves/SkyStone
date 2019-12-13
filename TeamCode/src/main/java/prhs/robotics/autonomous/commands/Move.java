@@ -15,6 +15,7 @@ public class Move implements Command {
         this.distance = dist;
     }
 
+    @Override
     public void run(CommandContext ctx) {
         int mfl_pos = ctx.m_front_l.getTargetPosition();
         int mfr_pos = ctx.m_front_r.getTargetPosition();
@@ -53,6 +54,7 @@ public class Move implements Command {
     }
 
     // TODO: this could be improved
+    @Override
     public boolean poll(CommandContext ctx) {
         return !ctx.m_front_l.isBusy()
                 && !ctx.m_front_r.isBusy()
