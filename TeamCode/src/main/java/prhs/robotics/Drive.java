@@ -19,7 +19,16 @@ public class Drive extends OpMode {
     private Servo servo0;
     private Servo servo1;
 
+    // Flipper Servos
+    private Servo servo2;
+    private Servo servo3;
+
+    // Grabber servo
+    private Servo servo4;
+
     private double armPosition = 0.2; // Start arm slightly down
+    private double flipperPosition = 0.5; // Start flippers open
+    private double grabberPosition = 0.0;
 
     private ElapsedTime timer;
 
@@ -44,6 +53,9 @@ public class Drive extends OpMode {
 
         this.servo0 = this.hardwareMap.get(Servo.class, "servo0");
         this.servo1 = this.hardwareMap.get(Servo.class, "servo1");
+        this.servo2 = this.hardwareMap.get(Servo.class, "servo2");
+        this.servo3 = this.hardwareMap.get(Servo.class, "servo3");
+        this.servo4 = this.hardwareMap.get(Servo.class, "servo4");
 
         // Initialize and reset motors
         Motors.reset_motor(m_front_l, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -54,6 +66,9 @@ public class Drive extends OpMode {
         // Set servo directions
         this.servo0.setDirection(Servo.Direction.REVERSE);
         this.servo1.setDirection(Servo.Direction.FORWARD);
+        this.servo2.setDirection(Servo.Direction.REVERSE);
+        this.servo3.setDirection(Servo.Direction.FORWARD);
+        this.servo4.setDirection(Servo.Direction.FORWARD);
 
         // Create timer
         this.timer = new ElapsedTime();
@@ -89,11 +104,14 @@ public class Drive extends OpMode {
         float js_1_rx = this.gamepad1.right_stick_x;
         float js_1_ry = this.gamepad1.right_stick_y;
 
-        float js_2_x = this.gamepad2.left_stick_x;
-        float js_2_y = this.gamepad2.left_stick_y;
-
         float gp_2_lt = this.gamepad2.left_trigger;
         float gp_2_rt = this.gamepad2.right_trigger;
+
+        boolean gp_2_lb = this.gamepad2.left_bumper;
+        boolean gp_2_rb = this.gamepad2.right_bumper;
+
+        boolean gp_2_a = this.gamepad2.a;
+        boolean gp_2_y = this.gamepad2.y;
 
         // Report values
         this.telemetry.addData(
@@ -104,17 +122,17 @@ public class Drive extends OpMode {
         );
 
         this.telemetry.addData(
-                "GP2 Joystick Position",
-                "(%.2f, %.2f)",
-                js_2_x,
-                js_2_y
-        );
-
-        this.telemetry.addData(
                 "GP2 Triggers",
                 "(%.2f, %.2f)",
                 gp_2_lt,
                 gp_2_rt
+        );
+
+        this.telemetry.addData(
+                "GP2 Bumpers",
+                "(%b, %b)",
+                gp_2_lb,
+                gp_2_rb
         );
 
         // Declare motor speeds
@@ -168,13 +186,36 @@ public class Drive extends OpMode {
             this.armPosition += timescale * gp_2_rt;
         }
 
+        // Update grabber position
+        if (gp_2_lb) {
+            this.grabberPosition += timescale;
+        }
+        if (gp_2_rb) {
+            this.grabberPosition -= timescale;
+        }
+
+        // Update flipper position
+        if (gp_2_a) {
+            this.flipperPosition = 1.0;
+        }
+        if (gp_2_y) {
+            this.flipperPosition = 0.5;
+        }
+
         // Clamp grabber position to [0.0, 1.0]
         this.armPosition = Math.max(this.armPosition, 0.0);
         this.armPosition = Math.min(this.armPosition, 1.0);
 
-        // Write grabber position to servos
+        // Write arm position to servos
         this.servo0.setPosition(this.armPosition);
         this.servo1.setPosition(this.armPosition);
+
+        // Write grabber position to servo
+        this.servo4.setPosition(this.grabberPosition);
+
+        // Write flipper position to servos
+        this.servo2.setPosition(this.flipperPosition);
+        this.servo3.setPosition(this.flipperPosition);
 
         // Report grabber position
         this.telemetry.addData("Arm Position", "%.2f", this.armPosition);
