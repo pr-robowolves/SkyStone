@@ -111,6 +111,8 @@ public class Drive extends OpMode {
         boolean gp_2_rb = this.gamepad2.right_bumper;
 
         boolean gp_2_a = this.gamepad2.a;
+        boolean gp_2_b = this.gamepad2.b;
+        boolean gp_2_x = this.gamepad2.x;
         boolean gp_2_y = this.gamepad2.y;
 
         // Report values
@@ -133,6 +135,15 @@ public class Drive extends OpMode {
                 "(%b, %b)",
                 gp_2_lb,
                 gp_2_rb
+        );
+
+        this.telemetry.addData(
+                "GP2 Buttons",
+                "%s%s%s%s",
+                gp_2_a ? 'A' : 'a',
+                gp_2_b ? 'B' : 'b',
+                gp_2_x ? 'X' : 'x',
+                gp_2_y ? 'Y' : 'y'
         );
 
         // Declare motor speeds
@@ -217,7 +228,9 @@ public class Drive extends OpMode {
         this.servo2.setPosition(this.flipperPosition);
         this.servo3.setPosition(this.flipperPosition);
 
-        // Report grabber position
+        // Report servo positions
         this.telemetry.addData("Arm Position", "%.2f", this.armPosition);
+        this.telemetry.addData("Grabber Position", "%.2f", this.grabberPosition);
+        this.telemetry.addData("Flipper Position", "%.2f", this.flipperPosition);
     }
 }
