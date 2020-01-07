@@ -15,10 +15,6 @@ public class Drive extends OpMode {
     private DcMotor m_back_l;  // port 3
     private DcMotor m_back_r;  // port 4
 
-    // Arm servos
-    private Servo servo0;
-    private Servo servo1;
-
     // Flipper Servos
     private Servo servo2;
     private Servo servo3;
@@ -26,7 +22,7 @@ public class Drive extends OpMode {
     // Grabber servo
     private Servo servo4;
 
-    private double armPosition = 0.2; // Start arm slightly down
+    // private double armPosition = 0.2; // Start arm slightly down
     private double flipperPosition = 0.5; // Start flippers open
     private double grabberPosition = 0.0;
 
@@ -51,8 +47,6 @@ public class Drive extends OpMode {
         this.m_back_l = this.hardwareMap.get(DcMotor.class, "m_back_l");
         this.m_back_r = this.hardwareMap.get(DcMotor.class, "m_back_r");
 
-        this.servo0 = this.hardwareMap.get(Servo.class, "servo0");
-        this.servo1 = this.hardwareMap.get(Servo.class, "servo1");
         this.servo2 = this.hardwareMap.get(Servo.class, "servo2");
         this.servo3 = this.hardwareMap.get(Servo.class, "servo3");
         this.servo4 = this.hardwareMap.get(Servo.class, "servo4");
@@ -64,8 +58,6 @@ public class Drive extends OpMode {
         Motors.reset_motor(m_back_r, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set servo directions
-        this.servo0.setDirection(Servo.Direction.REVERSE);
-        this.servo1.setDirection(Servo.Direction.FORWARD);
         this.servo2.setDirection(Servo.Direction.REVERSE);
         this.servo3.setDirection(Servo.Direction.FORWARD);
         this.servo4.setDirection(Servo.Direction.FORWARD);
@@ -189,14 +181,6 @@ public class Drive extends OpMode {
                 this.m_back_r.getCurrentPosition()
         );
 
-        // Update arm position
-        if (gp_2_lt > 0.1f) {
-            this.armPosition -= timescale * gp_2_lt;
-        }
-        if (gp_2_rt > 0.1f) {
-            this.armPosition += timescale * gp_2_rt;
-        }
-
         // Update grabber position
         if (gp_2_lb) {
             this.grabberPosition += timescale;
@@ -213,14 +197,6 @@ public class Drive extends OpMode {
             this.flipperPosition = 0.5;
         }
 
-        // Clamp grabber position to [0.0, 1.0]
-        this.armPosition = Math.max(this.armPosition, 0.0);
-        this.armPosition = Math.min(this.armPosition, 1.0);
-
-        // Write arm position to servos
-        this.servo0.setPosition(this.armPosition);
-        this.servo1.setPosition(this.armPosition);
-
         // Write grabber position to servo
         this.servo4.setPosition(this.grabberPosition);
 
@@ -229,7 +205,6 @@ public class Drive extends OpMode {
         this.servo3.setPosition(this.flipperPosition);
 
         // Report servo positions
-        this.telemetry.addData("Arm Position", "%.2f", this.armPosition);
         this.telemetry.addData("Grabber Position", "%.2f", this.grabberPosition);
         this.telemetry.addData("Flipper Position", "%.2f", this.flipperPosition);
     }
