@@ -10,10 +10,11 @@ import prhs.robotics.util.Motors;
 
 @TeleOp(name="[USE THIS] Drive")
 public class Drive extends OpMode {
-    private DcMotor m_front_l; // port 0
-    private DcMotor m_front_r; // port 1
-    private DcMotor m_back_l;  // port 3
-    private DcMotor m_back_r;  // port 4
+    private DcMotor m_front_l; // port 2:0
+    private DcMotor m_front_r; // port 2:1
+    private DcMotor m_back_l;  // port 2:3
+    private DcMotor m_back_r;  // port 2:4
+    private DcMotor m_arm;     // port 3:1
 
     // Flipper Servos
     private Servo servo2;
@@ -22,9 +23,9 @@ public class Drive extends OpMode {
     // Grabber servo
     private Servo servo4;
 
-    // private double armPosition = 0.2; // Start arm slightly down
+    private double armSpeed = 0.05;
     private double flipperPosition = 0.5; // Start flippers open
-    private double grabberPosition = 0.0;
+    private double grabberPosition = 0.0; // Start grabber closed
 
     private ElapsedTime timer;
 
@@ -46,6 +47,7 @@ public class Drive extends OpMode {
         this.m_front_r = this.hardwareMap.get(DcMotor.class, "m_front_r");
         this.m_back_l = this.hardwareMap.get(DcMotor.class, "m_back_l");
         this.m_back_r = this.hardwareMap.get(DcMotor.class, "m_back_r");
+        this.m_arm = this.hardwareMap.get(DcMotor.class, "m_arm");
 
         this.servo2 = this.hardwareMap.get(Servo.class, "servo2");
         this.servo3 = this.hardwareMap.get(Servo.class, "servo3");
@@ -56,6 +58,7 @@ public class Drive extends OpMode {
         Motors.reset_motor(m_front_r, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Motors.reset_motor(m_back_l, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Motors.reset_motor(m_back_r, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors.reset_motor(m_arm, DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Set servo directions
         this.servo2.setDirection(Servo.Direction.REVERSE);
@@ -161,24 +164,27 @@ public class Drive extends OpMode {
         this.m_front_r.setPower(p_front_r);
         this.m_back_l.setPower(p_back_l);
         this.m_back_r.setPower(p_back_r);
+        this.m_arm.setPower((gp_2_lt - gp_2_rt) * this.armSpeed);
 
         // Report motor data
         this.telemetry.addData(
                 "Motor Speeds",
-                "%.2f, %.2f, %.2f, %.2f",
+                "%.2f, %.2f, %.2f, %.2f, %.2f",
                 this.m_front_l.getPower(),
                 this.m_front_r.getPower(),
                 this.m_back_l.getPower(),
-                this.m_back_r.getPower()
+                this.m_back_r.getPower(),
+                this.m_arm.getPower()
         );
 
         this.telemetry.addData(
                 "Motor Positions",
-                "%d, %d, %d, %d",
+                "%d, %d, %d, %d, %d",
                 this.m_front_l.getCurrentPosition(),
                 this.m_front_r.getCurrentPosition(),
                 this.m_back_l.getCurrentPosition(),
-                this.m_back_r.getCurrentPosition()
+                this.m_back_r.getCurrentPosition(),
+                this.m_arm.getCurrentPosition()
         );
 
         // Update grabber position
