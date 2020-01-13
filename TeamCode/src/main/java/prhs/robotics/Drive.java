@@ -23,7 +23,7 @@ public class Drive extends OpMode {
     // Grabber servo
     private Servo servo4;
 
-    private double armSpeed = 0.05;
+    private double armSpeed = 0.3;
     private double flipperPosition = 0.5; // Start flippers open
     private double grabberPosition = 0.0; // Start grabber closed
 
