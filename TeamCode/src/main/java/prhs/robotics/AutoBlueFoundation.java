@@ -19,13 +19,23 @@ public class AutoBlueFoundation extends Controller {
     public void init() {
         this.command_queue = new LinkedList<>();
 
-        this.command_queue.add(new Move(Direction.BACKWARDS, 35.0));
+        // Pull back foundation
+        this.command_queue.add(new Move(Direction.LEFT, 8.0));
+        this.command_queue.add(new Move(Direction.BACKWARDS, 30.0));
         this.command_queue.add(new SetFlippers(1.0));
-        this.command_queue.add(new Wait(0.5));
-        this.command_queue.add(new Move(Direction.FORWARDS, 24.0));
+        this.command_queue.add(new Wait(0.2));
+        this.command_queue.add(new Move(Direction.FORWARDS, 15.0));
         this.command_queue.add(new SetFlippers(0.5));
-        this.command_queue.add(new Wait(0.5));
-        this.command_queue.add(new Move(Direction.RIGHT, 48.0));
+        this.command_queue.add(new Wait(0.2));
+
+        // Move behind foundation and push in
+        this.command_queue.add(new Move(Direction.RIGHT, 36.0));
+        this.command_queue.add(new Move(Direction.BACKWARDS, 36.0));
+        this.command_queue.add(new Move(Direction.LEFT, 36.0));
+        this.command_queue.add(new Move(Direction.FORWARDS, 24.0));
+
+        // Move under bridge
+        this.command_queue.add(new Move(Direction.RIGHT, 46.0));
 
         super.init();
     }

@@ -49,10 +49,10 @@ public abstract class Controller extends OpMode {
         Motors.reset_motor(m_back_r, DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set motor speeds
-        this.m_front_l.setPower(0.5);
-        this.m_front_r.setPower(0.5);
-        this.m_back_l.setPower(0.5);
-        this.m_back_r.setPower(0.5);
+        this.m_front_l.setPower(1.0);
+        this.m_front_r.setPower(1.0);
+        this.m_back_l.setPower(1.0);
+        this.m_back_r.setPower(1.0);
 
         // Set servo directions
         this.flipper_left.setDirection(Servo.Direction.FORWARD);
