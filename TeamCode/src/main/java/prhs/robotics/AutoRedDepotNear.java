@@ -20,7 +20,7 @@ public class AutoRedDepotNear extends Controller {
 
         this.command_queue.add(new Move(Direction.FORWARDS, 3.0));
         this.command_queue.add(new Wait(0.5));
-        this.command_queue.add(new Move(Direction.RIGHT, 36.0));
+        this.command_queue.add(new Move(Direction.RIGHT, 45.0));
 
         super.init();
     }

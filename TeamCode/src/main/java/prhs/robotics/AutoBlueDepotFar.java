@@ -20,7 +20,7 @@ public class AutoBlueDepotFar extends Controller {
 
         this.command_queue.add(new Move(Direction.FORWARDS, 25.0));
         this.command_queue.add(new Wait(0.5));
-        this.command_queue.add(new Move(Direction.LEFT, 36.0));
+        this.command_queue.add(new Move(Direction.LEFT, 45.0));
 
         super.init();
     }
