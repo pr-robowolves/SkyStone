@@ -194,6 +194,8 @@ public class Drive extends OpMode {
         if (gp_2_rb) {
             this.grabberPosition -= timescale;
         }
+        this.grabberPosition = Math.max(this.grabberPosition, 0.4);
+        this.grabberPosition = Math.min(this.grabberPosition, 1.0);
 
         // Update flipper position
         if (gp_2_a) {
