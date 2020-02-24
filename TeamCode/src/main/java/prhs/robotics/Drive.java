@@ -148,10 +148,10 @@ public class Drive extends OpMode {
         float p_back_r = 0f;
 
         // Traditional control (left stick)
-        p_front_l += js_1_ly - js_1_lx;
-        p_front_r += -js_1_ly - js_1_lx;
-        p_back_l += js_1_ly - js_1_lx;
-        p_back_r += -js_1_ly - js_1_lx;
+        p_front_l += js_1_ly + js_1_lx;
+        p_front_r += -js_1_ly + js_1_lx;
+        p_back_l += js_1_ly + js_1_lx;
+        p_back_r += -js_1_ly + js_1_lx;
 
         // Strafe control (right stick)
         p_front_l += js_1_ry - js_1_rx;
